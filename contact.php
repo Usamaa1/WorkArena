@@ -1,0 +1,478 @@
+<?php
+//index.php
+
+$error = '';
+$name = '';
+$email = '';
+$subject = '';
+$mobile = '';
+$message = '';
+
+function clean_text($string)
+{
+  $string = trim($string);
+  $string = stripslashes($string);
+  $string = htmlspecialchars($string);
+  return $string;
+}
+
+if (isset($_POST["submit"])) {
+  if (empty($_POST["name"])) {
+    $error .= '<p><label class="text-danger">Please Enter your Name</label></p>';
+  } else {
+    $name = clean_text($_POST["name"]);
+    if (!preg_match("/^[a-zA-Z ]*$/", $name)) {
+      $error .= '<p><label class="text-danger">Only letters and white space allowed</label></p>';
+    }
+  }
+  if (empty($_POST["email"])) {
+    $error .= '<p><label class="text-danger">Please Enter your Email</label></p>';
+  } else {
+    $email = clean_text($_POST["email"]);
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+      $error .= '<p><label class="text-danger">Invalid email format</label></p>';
+    }
+  }
+  if (empty($_POST["subject"])) {
+    $error .= '<p><label class="text-danger">Subject is required</label></p>';
+  } else {
+    $subject = clean_text($_POST["subject"]);
+  }
+
+  if (empty($_POST["mobile"])) {
+    $error .= '<p><label class="text-danger">Mobile is required</label></p>';
+  } else {
+    $mobile = clean_text($_POST["mobile"]);
+  }
+
+  if (empty($_POST["message"])) {
+    $error .= '<p><label class="text-danger">Message is required</label></p>';
+  } else {
+    $message = clean_text($_POST["message"]);
+  }
+
+  if ($error == '') {
+
+    $servername = "localhost";
+    $username = "root";
+    $password = "";
+    $dbname = "contact_form";
+
+    // Create connection
+    $conn = mysqli_connect($servername, $username, $password, $dbname);
+    // Check connection
+    if (!$conn) {
+      die("Connection failed: " . mysqli_connect_error());
+    }
+
+    $sql = "INSERT INTO contact (name, email, message, subject, mobile)
+VALUES ('$name', '$email', '$message', '$subject', '$mobile')";
+
+    if (mysqli_query($conn, $sql)) {
+      //   echo "New record created successfully";
+    } else {
+      echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+    }
+
+    mysqli_close($conn);
+
+    $error = '<label class="text-success">New record created successfully </label>';
+    $name = '';
+    $email = '';
+    $subject = '';
+    $mobile = '';
+    $message = '';
+  }
+}
+
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Work Arena</title>
+  <meta name="description" content="">
+  <link href="img/favicon.ico" rel="shortcut icon">
+  <!-- Fonts -->
+  <link href="fonts/cloudicon/cloudicon.css" rel="stylesheet" media="none" onload="if(media!='all')media='all'">
+  <link href="fonts/fontawesome/css/all.css" rel="stylesheet" media="none" onload="if(media!='all')media='all'">
+  <link href="fonts/opensans/opensans.css" rel="stylesheet" media="none" onload="if(media!='all')media='all'">
+  <!-- CSS styles -->
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/magnific-popup.css" rel="stylesheet" media="none" onload="if(media!='all')media='all'">
+  <link href="css/filter.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link href="css/style.min.css" rel="stylesheet">
+  <!-- Custom color styles -->
+  <link href="css/colors/pink.css" rel="stylesheet" title="pink" media="none" onload="if(media!='all')media='all'" />
+  <link href="css/colors/blue.css" rel="stylesheet" title="blue" media="none" onload="if(media!='all')media='all'" />
+  <link href="css/colors/green.css" rel="stylesheet" title="green" media="none" onload="if(media!='all')media='all'" />
+
+
+
+</head>
+
+<body>
+  <!-- ***** LOADING PAGE ****** -->
+  <div id="spinner-area">
+    <div class="spinner">
+      <div class="double-bounce1"></div>
+      <div class="double-bounce2"></div>
+      <div class="spinner-txt">WorkArena</div>
+    </div>
+  </div>
+  <!-- ***** HEADER ***** -->
+  <header id="header">
+    <header id="header">
+      <!-- ***** NAV MENU ****** -->
+      <div class="menu-wrap fixed">
+        <div class="nav-menu">
+          <div class="container">
+            <div class="row">
+              <div class="col-2 col-md-2">
+                <a href="index.html" style="text-decoration: none;">
+                  <h1 class="main-menu-heading">Work Arena!</h1>
+                </a>
+              </div>
+              <nav id="menu" class="col-10 col-md-10">
+                <div class="navigation float-right">
+                  <ul class="main-menu nav navbar-nav navbar-right">
+                    <li class="menu-item menu-item-has-children">
+                      <a class="v-stroke" href="index.html">Home</a></li>
+                    <li class="menu-item menu-item-has-children">
+                      <a class="v-stroke" href="portfolio.html">Portfolio</a></li>
+                    <li class="menu-item menu-item-has-children">
+                      <a class="v-stroke" href="aboutus.html">About Us</a></li>
+                    <li class="menu-item ">
+                      <a class="v-stroke" href="contact.php">Contact Us</a></li>
+                  </ul>
+                </div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ***** NAV MENU MOBILE ****** -->
+      <div class="menu-wrap mobile fixed">
+        <div class="container">
+          <div class="row">
+            <div class="col-6">
+              <a href="index.html" style="text-decoration: none;">
+                <h1 class="main-menu-heading">Work Arena!</h1>
+              </a>
+            </div>
+            <div class="col-6">
+              <nav class="nav-menu">
+                <button id="nav-toggle" class="menu-toggle">
+                  <span class="icon"></span>
+                  <span class="icon"></span>
+                  <span class="icon"></span>
+                </button>
+                <div class="main-menu">
+                  <div class="menu-item">
+                    <a href="index.html">Home
+                    </a>
+                  </div>
+                  <div class="menu-item">
+                    <a href="portfolio.html">Portfolio </a></div>
+                  <div class="menu-item">
+                    <a href="aboutus.html">About Us</a>
+                  </div>
+                  <div class="menu-item">
+                    <a href="contact.php">Contact Us</a>
+                  </div>
+                  <div class="float-left w-100 mt-3">
+                    <p class="c-grey"> <small> Phone: +92 312-264-6835</small> </p>
+                    <p class="c-grey"><small>Email: workarena6x@gmail.com</small> </p>
+                  </div>
+                </div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+  </header>
+
+  <!-- ***** BANNER ***** -->
+  <div class="top-header exapath-w">
+    <div class="total-grad-inverse"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="wrapper">
+            <div class="heading">Contact us</div>
+            <div class="subheding">Don't worry! We have support premium 24/7/365. We are looking forward waiting for
+              your contact. </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ***** LOCATION ***** -->
+  <section class="services pt-4 sec-normal">
+    <div class="container">
+      <div class="randomline">
+        <div class="bigline"></div>
+        <div class="smallline"></div>
+      </div>
+      <div class="service-wrap">
+        <div class="row">
+          <div class="col-sm-12 col-md-4">
+            <div class="service-section">
+              <img class="svg animal" src="img/Features/address-location.svg" alt="">
+              <div class="title">Pakistan</div>
+              <div class="subtitle">Contact no: +92 312-264-6835 <br>HeadQuarter - Arfat Town block "L", North
+                Nazimabad, City
+                Karachi.</div>
+              <a class="btn btn-default-yellow-fill s" href="#ticket">Contact us</a>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-4">
+            <div class="service-section-map">
+              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1808.9202077795812!2d67.0558072574351!3d24.937505842349257!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3eb33f7b54bd0ebd%3A0xd9b30eabf40e13da!2sArafat%20Town%20North%20Nazimabad%20Town%2C%20Karachi%2C%20Karachi%20City%2C%20Sindh%2C%20Pakistan!5e0!3m2!1sen!2s!4v1603992373536!5m2!1sen!2s" width="700" height="550" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ***** HELP ***** -->
+  <section class="services help pt-4 pb-80 cpupath">
+    <div class="container">
+      <div class="service-wrap">
+        <div class="row">
+          <div class="col-sm-12 col-md-6 col-lg-4">
+            <div class="help-container">
+              <a href="#ticket" class="help-item">
+                <div class="img">
+                  <img class="svg ico" src="fonts/svg/livechat.svg" height="65" alt="">
+                </div>
+                <div class="inform">
+                  <div class="title">Send Message</div>
+                  <div class="description">Click here!</div>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6 col-lg-4">
+            <div class="help-container">
+              <a class="help-item gocheck">
+                <div class="img">
+                  <img class="svg ico" src="fonts/svg/emailopen.svg" height="65" alt="">
+                </div>
+                <div class="inform">
+                  <div class="title">Send Email</div>
+                  <div class="description">workarena6x@gmail.com</div>
+                </div>
+              </a>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6 col-lg-4">
+            <div class="help-container">
+              <a class="help-item">
+                <div class="img">
+                  <img class="svg ico" src="fonts/svg/phone.svg" height="65" alt="">
+                </div>
+                <div class="inform">
+                  <div class="title">Phone Now</div>
+                  <div class="description">+92 312-264-6835</div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ***** MAP ***** -->
+  <section class="services maping sec-normal sec-grad-grey-to-grey">
+    <div class="container">
+      <div class="service-wrap">
+        <div class="row">
+          <div class="col-sm-12 text-left">
+            <h2 class="section-heading text-white">We do our business in worldwide!</h2>
+          </div>
+          <div class="col-md-12 pt-5 scrollme">
+            <img data-src="patterns/map.svg" class="lazyload w-10 animateme" alt="Load Balancing" data-when="view" data-from="2" data-to="0" data-opacity="0">
+            <span data-toggle="popover" data-container="body" data-trigger="hover" data-placement="top" title="" class="datacenters montreal" data-original-title="Montreal" data-content="We facilitate our customers here."></span>
+            <span data-toggle="popover" data-container="body" data-trigger="hover" data-placement="top" title="" class="datacenters newyork" data-original-title="New York" data-content="We facilitate our customers here."></span>
+            <span data-toggle="popover" data-container="body" data-trigger="hover" data-placement="top" title="" class="datacenters portugal" data-original-title="Portugal" data-content="We facilitate our customers here."></span>
+            <span data-toggle="popover" data-container="body" data-trigger="hover" data-placement="top" title="" class="datacenters london" data-original-title="London" data-content="We facilitate our customers here."></span>
+            <span data-toggle="popover" data-container="body" data-trigger="hover" data-placement="top" title="" class="datacenters moskow" data-original-title="Moskow" data-content="We facilitate our customers here."></span>
+            <span data-toggle="popover" data-container="body" data-trigger="hover" data-placement="top" title="" class="datacenters hongkong" data-original-title="Hong Kong" data-content="We facilitate our customers here."></span>
+            <span data-toggle="popover" data-container="body" data-trigger="hover" data-placement="top" title="" class="datacenters singapure" data-original-title="Singapure" data-content="We facilitate our customers here."></span>
+            <span data-toggle="popover" data-container="body" data-trigger="hover" data-placement="top" title="" class="datacenters pakistan" data-original-title="Pakistan" data-content="We facilitate our customers here."></span>
+            <span data-toggle="popover" data-container="body" data-trigger="hover" data-placement="top" title="" class="datacenters india" data-original-title="India" data-content="We facilitate our customers here."></span>
+            <span data-toggle="popover" data-container="body" data-trigger="hover" data-placement="top" title="" class="datacenters america" data-original-title="America" data-content="We facilitate our customers here."></span>
+            <span data-toggle="popover" data-container="body" data-trigger="hover" data-placement="top" title="" class="datacenters azerbijan" data-original-title="Azerbijan" data-content="We facilitate our customers here."></span>
+            <span data-toggle="popover" data-container="body" data-trigger="hover" data-placement="top" title="" class="datacenters uzbekistan" data-original-title="Uzbekistan" data-content="We facilitate our customers here."></span>
+            <span data-toggle="popover" data-container="body" data-trigger="hover" data-placement="top" title="" class="datacenters korea" data-original-title="Korea" data-content="We facilitate our customers here."></span>
+            <span data-toggle="popover" data-container="body" data-trigger="hover" data-placement="top" title="" class="datacenters turkey" data-original-title="Turkey" data-content="We facilitate our customers here."></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ***** CONTACT FORM ***** -->
+  <section id="ticket" class="exapath pb-80">
+    <div class="container">
+      <div class="sec-main sec-up mb-0 sec-bg1">
+        <div class="randomline">
+          <div class="bigline"></div>
+          <div class="smallline"></div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 col-lg-12 cd-filter-block mb-0">
+            <div class="form-contact cd-filter-content p-0 sec-bx">
+              <h2 class="section-heading mb-1">Full out the Contact form to contact us</h2>
+              <p>We Will Help You To Enhance Your Project!</p>
+              <form method="POST">
+                <div class="row">
+                  <div class="col-md-6">
+                    <label><i class="fas fa-user-tie"></i></label>
+                    <input id="name" type="text" name="name" placeholder="Full Name" required="" value="<?php echo $name; ?>">
+                  </div>
+                  <div class="col-md-6">
+                    <label><i class="fas fa-envelope"></i></label>
+                    <input id="email" type="email" name="email" placeholder="Email Address" required="" value="<?php echo $email; ?>">
+                  </div>
+                  <div class="col-md-6">
+                    <label><i class="fas fa-file-alt"></i></label>
+                    <input id="subject" type="text" name="subject" placeholder="Subject" required value="<?php echo $subject; ?>">
+                  </div>
+                  <div class="col-md-6">
+                    <label><i class="fas fa-mobile"></i></label>
+                    <input id="subject" type="text" name="mobile" placeholder="Phone Number" required value="<?php echo $mobile; ?>">
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group mt-4">
+                      <textarea id="message" name="message" class="form-control" rows="5" placeholder="Message..."><?php echo $message; ?></textarea>
+                    </div>
+                  </div>
+                  <div class="col-md-6 mt-5">
+                    <button type="submit" value="Submit" name="submit" class="btn btn-default-yellow-fill float-left mr-3">Submit</button>
+                  </div>
+                  <div id="msgSubmit" class="col-md-12 mt-4">
+                    <h3 class="c-pink"> Message Submitted!</h3>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ***** FOOTER ***** -->
+  <footer id="footer">
+    <!--
+    *******************
+    FOOTER
+    *******************-->
+    <link href="css/gdpr-cookie.css" rel="stylesheet">
+    <footer class="footer">
+      <img class="logo-bg logo-footer" src="img/symbol.svg" alt="logo">
+      <div class="container">
+        <div class="footer-top">
+          <div class="row">
+            <div class="col-sm-6 col-md-3">
+              <div class="heading">Portfolio</div>
+              <ul class="footer-menu">
+                <li class="menu-item"><a href="legal.html#webdev">Web Development</a></li>
+                <li class="menu-item"><a href="legal.html#mobdev">Android Development</a></li>
+                <li class="menu-item"><a href="legal.html#dasc">Data Science</a></li>
+              </ul>
+            </div>
+            <div class="col-sm-6 col-md-3">
+              <div class="heading">Support</div>
+              <ul class="footer-menu">
+                <li class="menu-item"><a href="index.html">Home</a></li>
+                <li class="menu-item"><a href="portfolio.html">Our Work</a></li>
+              </ul>
+            </div>
+            <div class="col-sm-6 col-md-3">
+              <div class="heading">Company</div>
+              <ul class="footer-menu">
+                <li class="menu-item"><a href="aboutus.html">About Us</a> </li>
+                <li class="menu-item"><a href="contact.php">Contact us</a></li>
+              </ul>
+            </div>
+            <div class="col-sm-6 col-md-3">
+              <a>
+                <h1 class="main-menu-heading-f">Work Arena!</h1>
+              </a>
+              <div class="copyrigh">©2020 Work Arena - All rights reserved</div>
+              <div class="soc-icons">
+                <a href="https://www.facebook.com/work.arena.75" target="blank"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://github.com/Work-Arena" target="blank"><i class="fab fa-github"></i></a>
+                <a href="https://twitter.com/workarena6x" target="blank"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.instagram.com/workarena6x/" target="blank"><i class="fab fa-instagram"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="subcribe news">
+        <div class="container">
+          <div class="row">
+            <form action="#" class="w-100">
+              <div class="col-md-6 offset-md-3">
+                <div class="general-input">
+                </div>
+              </div>
+              <div class="col-md-6 offset-md-3 text-center pt-4">
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-6">
+              <ul class="footer-menu">
+                <li class="menu-item by c-grey">Hybrid Design With ♥ by
+                  <a href="index.html" target="_blank">Work Arena</a>
+                </li>
+              </ul>
+            </div>
+            <div class="col-lg-6">
+              <ul class="payment-list">
+                <li>
+                  <p>Payments We Accept</p>
+                </li>
+                <li><i class="fab fa-cc-paypal"></i></li>
+                <li><i class="fab fa-cc-visa"></i></li>
+                <li><i class="fab fa-cc-amazon-pay"></i></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- ***** BUTTON GO TOP ***** -->
+    <a href="#0" class="cd-top"> <i class="fas fa-angle-up"></i> </a>
+    <!-- Javascript -->
+    <script src="js/jquery.min.js"></script>
+    <script defer src="js/popper.min.js"></script>
+    <script defer src="js/bootstrap.min.js"></script>
+    <script defer src="js/jquery.countdown.js"></script>
+    <script defer src="js/jquery.magnific-popup.min.js"></script>
+    <script defer src="js/slick.min.js"></script>
+    <script defer src="js/owl.carousel.min.js"></script>
+    <script defer src="js/isotope.min.js"></script>
+    <script defer src="js/swiper.min.js"></script>
+    <script async src="js/lazysizes.min.js"></script>
+    <script defer src="js/scripts.min.js"></script>
+</body>
+
+</html>
